@@ -28,7 +28,7 @@
     {
       "name": "default",
       "runtime": "nodejs18.x",
-      "entrypoint": "server.mjs"
+      "entrypoint": "server.js"
     }
   ]
 }
