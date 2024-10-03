@@ -4,14 +4,21 @@ phases:
   build:
     commands:
       - npm ci --cache .npm --prefer-offline
-      - npm run build
       - npx ampx pipeline-deploy --branch $AWS_BRANCH --app-id $AWS_APP_ID
 frontend:
   phases:
     build:
       commands:
-        # - npm ci --cache .npm --prefer-offline
+        - npm ci --cache .npm --prefer-offline
         - npm run build
+        - cp server-base.js .amplify-hosting/compute/default
+        - cp -r ./node_modules ./.amplify-hosting/compute/default/node_modules
+        - cp -r public ./.amplify-hosting/static
+        - cp deploy-manifest.json ./.amplify-hosting/deploy-manifest.json
+        - cp package.json ./.amplify-hosting/compute/default/package.json
+        - cd .amplify-hosting/compute/default
+        - node_modules/.bin/esbuild --bundle server-base.js --outfile=server.cjs --platform=node --external:pkg --external:lightningcss --external:vite
+        - rm -rf node_modules
   artifacts:
     baseDirectory: .amplify-hosting
     files:
