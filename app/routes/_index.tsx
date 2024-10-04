@@ -32,6 +32,7 @@ export default function Index() {
         </header>
         <nav className="flex flex-col items-center justify-center gap-4 rounded-3xl border border-gray-200 p-6 dark:border-gray-700">
           <button onClick={() => {
+            console.log("Sending event")
             gtag.event({
               action: "click",
               category: "button",
