@@ -17,8 +17,13 @@ frontend:
         - cp deploy-manifest.json ./.amplify-hosting/deploy-manifest.json
         - cp package.json ./.amplify-hosting/compute/default/package.json
         - cd .amplify-hosting/compute/default
+        - echo "Building Server into a single file"
         - node_modules/.bin/esbuild --bundle server-base.js --outfile=server.cjs --platform=node --external:pkg --external:lightningcss --external:vite
+        - echo "Cleanup"
         - rm -rf node_modules
+        - rm -rf server
+        - rm server-base.js
+        - rm package.json
   artifacts:
     baseDirectory: .amplify-hosting
     files:
