@@ -37,6 +37,7 @@ export const loader = async () => {
 export function Layout({ children }: { children: React.ReactNode }) {
   const location = useLocation();
   const { gaTrackingId } = useLoaderData<typeof loader>();
+  console.log("TrackingID:", gaTrackingId);
 
   useEffect(() => {
     if (gaTrackingId?.length) {
@@ -48,9 +49,15 @@ export function Layout({ children }: { children: React.ReactNode }) {
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        {process.env.NODE_ENV === "development" || !gaTrackingId ? 
-          <div dangerouslySetInnerHTML={{ __html: `<!-- No tracking (${process.env.NODE_ENV}, ${gaTrackingId}) -->` }} />
-         : (
+        <Meta />
+        <Links />
+        {process.env.NODE_ENV === "development" || !gaTrackingId ? (
+          <meta
+            dangerouslySetInnerHTML={{
+              __html: `<!-- No tracking (${process.env.NODE_ENV}, ${gaTrackingId}) -->`,
+            }}
+          />
+        ) : (
           <>
             <script
               async
@@ -73,8 +80,6 @@ export function Layout({ children }: { children: React.ReactNode }) {
             />
           </>
         )}
-        <Meta />
-        <Links />
       </head>
       <body>
         {children}
