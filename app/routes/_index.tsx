@@ -1,5 +1,7 @@
 import type { MetaFunction } from "@remix-run/node";
 
+import * as gtag from "../utils/gtags.client";
+
 export const meta: MetaFunction = () => {
   return [
     { title: "New Remix App" },
@@ -29,6 +31,13 @@ export default function Index() {
           </div>
         </header>
         <nav className="flex flex-col items-center justify-center gap-4 rounded-3xl border border-gray-200 p-6 dark:border-gray-700">
+          <button onClick={() => {
+            gtag.event({
+              action: "click",
+              category: "button",
+              label: "test",
+            });
+          }}>Test</button>
           <p className="leading-6 text-gray-700 dark:text-gray-200">
             What&apos;s next?
           </p>
