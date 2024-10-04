@@ -36,14 +36,14 @@ export const loader = async () => {
 
 export function Layout({ children }: { children: React.ReactNode }) {
   const location = useLocation();
-  const { gaTrackingId } = useLoaderData<typeof loader>();
-  console.log("TrackingID:", gaTrackingId);
+  const loaded = useLoaderData<typeof loader>();
+  console.log("TrackingID:", loaded?.gaTrackingId);
 
   useEffect(() => {
-    if (gaTrackingId?.length) {
-      gtag.pageview(location.pathname, gaTrackingId);
+    if (loaded?.gaTrackingId?.length) {
+      gtag.pageview(location.pathname, loaded?.gaTrackingId);
     }
-  }, [location, gaTrackingId]);
+  }, [location, loaded?.gaTrackingId]);
   return (
     <html lang="en">
       <head>
@@ -51,17 +51,17 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <Meta />
         <Links />
-        {process.env.NODE_ENV === "development" || !gaTrackingId ? (
+        {process.env.NODE_ENV === "development" || !loaded?.gaTrackingId ? (
           <meta
             dangerouslySetInnerHTML={{
-              __html: `<!-- No tracking (${process.env.NODE_ENV}, ${gaTrackingId}) -->`,
+              __html: `<!-- No tracking (${process.env.NODE_ENV}, ${loaded?.gaTrackingId}) -->`,
             }}
           />
         ) : (
           <>
             <script
               async
-              src={`https://www.googletagmanager.com/gtag/js?id=${gaTrackingId}`}
+              src={`https://www.googletagmanager.com/gtag/js?id=${loaded?.gaTrackingId}`}
             />
             <script
               async
@@ -72,7 +72,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
                 function gtag(){dataLayer.push(arguments);}
                 gtag('js', new Date());
 
-                gtag('config', '${gaTrackingId}', {
+                gtag('config', '${loaded?.gaTrackingId}', {
                   page_path: window.location.pathname,
                 });
               `,
