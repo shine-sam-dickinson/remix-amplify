@@ -1,13 +1,20 @@
 import {
+  json,
   Links,
   Meta,
   Outlet,
   Scripts,
   ScrollRestoration,
+  useLoaderData,
+  useLocation,
 } from "@remix-run/react";
+
+import * as gtag from "./utils/gtags.client";
+
 import type { LinksFunction } from "@remix-run/node";
 
 import "./tailwind.css";
+import { useEffect } from "react";
 
 export const links: LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -22,22 +29,48 @@ export const links: LinksFunction = () => [
   },
 ];
 
+// Load the GA tracking id from the .env
+export const loader = async () => {
+  return json({ gaTrackingId: process.env.GA_TRACKING_ID });
+};
+
 export function Layout({ children }: { children: React.ReactNode }) {
+  const location = useLocation();
+  const { gaTrackingId } = useLoaderData<typeof loader>();
+
+  useEffect(() => {
+    if (gaTrackingId?.length) {
+      gtag.pageview(location.pathname, gaTrackingId);
+    }
+  }, [location, gaTrackingId]);
   return (
     <html lang="en">
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        
-        <script async src="https://www.googletagmanager.com/gtag/js?id=G-MVLJVFRGBM"></script>
-        <script>
-          window.dataLayer = window.dataLayer || [];
-          function gtag(){dataLayer.push(arguments);}
-          gtag('js', new Date());
+        {process.env.NODE_ENV === "development" || !gaTrackingId ? null : (
+          <>
+            <script
+              async
+              src={`https://www.googletagmanager.com/gtag/js?id=${gaTrackingId}`}
+            />
+            <script
+              async
+              id="gtag-init"
+              dangerouslySetInnerHTML={{
+                __html: `
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
 
-          gtag('config', 'G-MVLJVFRGBM');
-        </script>
-
+                gtag('config', '${gaTrackingId}', {
+                  page_path: window.location.pathname,
+                });
+              `,
+              }}
+            />
+          </>
+        )}
         <Meta />
         <Links />
       </head>
