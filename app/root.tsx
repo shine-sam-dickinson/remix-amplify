@@ -49,7 +49,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         {process.env.NODE_ENV === "development" || !gaTrackingId ? 
-          <div dangerouslySetInnerHTML={{ __html: `<!-- No tracking -->` }} />
+          <div dangerouslySetInnerHTML={{ __html: `<!-- No tracking (${process.env.NODE_ENV}, ${gaTrackingId}) -->` }} />
          : (
           <>
             <script
