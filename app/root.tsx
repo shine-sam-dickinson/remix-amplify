@@ -15,6 +15,7 @@ import type { LinksFunction } from "@remix-run/node";
 
 import "./tailwind.css";
 import { useEffect } from "react";
+import { ReactComment } from "./utils/ReactComment";
 
 export const links: LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -52,10 +53,8 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Meta />
         <Links />
         {process.env.NODE_ENV === "development" || !loaded?.gaTrackingId ? (
-          <meta
-            dangerouslySetInnerHTML={{
-              __html: `<!-- No tracking (${process.env.NODE_ENV}, ${loaded?.gaTrackingId}) -->`,
-            }}
+          <ReactComment
+            text={`No tracking (${process.env.NODE_ENV}, ${loaded?.gaTrackingId})`}
           />
         ) : (
           <>
